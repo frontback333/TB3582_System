@@ -1,0 +1,42 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            // 1) Configure (기존 빌드폴더를 그대로 사용)
+            "label": "CMake: Configure (reuse QtCreator)",
+            "type": "cppbuild",
+            "command": "cmake",
+            "args": [
+                "-S",
+                "${workspaceFolder}",
+                "-B",
+                "${workspaceFolder}/build/Desktop_Qt_6_9_1_MinGW_64-bit-Debug",
+                "-G",
+                "Ninja"
+                // Qt를 못 찾는다면 ↓ 한 줄 추가 (경로는 본인 Qt로 교체)
+                // "-D", "CMAKE_PREFIX_PATH=C:/Qt/6.9.1/mingw_64"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            // 2) Build (qt creator와 동일 폴더 빌드)
+            "label": "CMake: Build (reuse QtCreator)",
+            "type": "cppbuild",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build/Desktop_Qt_6_9_1_MinGW_64-bit-Debug",
+                "--parallel"
+            ],
+            "problemMatcher": "$gcc",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": "CMake: Configure (reuse QtCreator)"
+        }
+    ]
+}

@@ -1,0 +1,13 @@
+{
+    "cmake.cmakePath": "C:/Qt/Tools/CMake_64/bin/cmake.exe",
+    "cmake.buildDirectory": "${workspaceFolder}/build/Desktop_Qt_6_9_1_MinGW_64-bit-Debug",
+    "cmake.generator": "Ninja",
+    "cmake.configureOnOpen": false,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/Desktop_Qt_6_9_1_MinGW_64-bit-Debug/compile_commands.json",
+    "files.associations": {
+        "qapplication": "cpp"
+    },
+    // (선택) Ninja를 못 찾는 경우에만 추가
+    // "cmake.ninjaPath": "C:/Qt/Tools/Ninja/ninja.exe"
+}
