@@ -17,7 +17,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QFrame" name="frame">
+   <widget class="QFrame" name="ThrustFrame">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -35,7 +35,7 @@
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QWidget" name="widget" native="true">
+    <widget class="QWidget" name="ThrustGraph" native="true">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -45,7 +45,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="ThrustV">
      <property name="geometry">
       <rect>
        <x>5</x>
@@ -67,7 +67,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QFrame" name="frame_2">
+   <widget class="QFrame" name="CombustTempFrame">
     <property name="geometry">
      <rect>
       <x>420</x>
@@ -85,7 +85,7 @@
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QWidget" name="widget_3" native="true">
+    <widget class="QWidget" name="CombustTempGraph" native="true">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -95,7 +95,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QLabel" name="label_3">
+    <widget class="QLabel" name="CombustTempV">
      <property name="geometry">
       <rect>
        <x>5</x>
@@ -117,7 +117,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QFrame" name="frame_3">
+   <widget class="QFrame" name="BLDCFrame">
     <property name="geometry">
      <rect>
       <x>830</x>
@@ -305,7 +305,7 @@ RPM</string>
      </property>
     </widget>
    </widget>
-   <widget class="QFrame" name="frame_4">
+   <widget class="QFrame" name="CompPressureFrame">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -323,7 +323,7 @@ RPM</string>
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QWidget" name="widget_5" native="true">
+    <widget class="QWidget" name="CompPressureGraph" native="true">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -333,7 +333,7 @@ RPM</string>
       </rect>
      </property>
     </widget>
-    <widget class="QLabel" name="label_5">
+    <widget class="QLabel" name="CompPressureV">
      <property name="geometry">
       <rect>
        <x>5</x>
@@ -355,7 +355,7 @@ RPM</string>
      </property>
     </widget>
    </widget>
-   <widget class="QFrame" name="frame_5">
+   <widget class="QFrame" name="LabelFrame">
     <property name="geometry">
      <rect>
       <x>420</x>
@@ -373,43 +373,43 @@ RPM</string>
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="CompTempV">
      <property name="geometry">
       <rect>
        <x>15</x>
        <y>10</y>
-       <width>200</width>
+       <width>250</width>
        <height>25</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>11</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>Housing Pressure : </string>
+      <string>Inlet Temperature : ? C</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="FuelPressure">
      <property name="geometry">
       <rect>
        <x>15</x>
        <y>40</y>
-       <width>200</width>
+       <width>250</width>
        <height>25</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>11</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>Housing Temp : </string>
+      <string>Fuel Pressure : </string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
@@ -420,13 +420,34 @@ RPM</string>
       <rect>
        <x>15</x>
        <y>70</y>
-       <width>200</width>
+       <width>250</width>
        <height>25</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>11</pointsize>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Housing Temp : </string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>130</y>
+       <width>250</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
