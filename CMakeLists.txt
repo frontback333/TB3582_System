@@ -20,7 +20,7 @@ set(PROJECT_SOURCES
 )
 
 if (UNIX AND NOT APPLE)
-  target_link_libraries(myapp PRIVATE pigpio pthread)
+  target_link_libraries(TB3582_System PRIVATE pigpio pthread)
 endif()
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
