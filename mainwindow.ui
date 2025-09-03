@@ -38,10 +38,10 @@
     <widget class="QWidget" name="ThrustGraph" native="true">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>400</width>
-       <height>200</height>
+       <x>3</x>
+       <y>3</y>
+       <width>394</width>
+       <height>202</height>
       </rect>
      </property>
     </widget>
@@ -49,18 +49,18 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>200</y>
+       <y>205</y>
        <width>385</width>
-       <height>30</height>
+       <height>25</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>N/A</string>
+      <string>Thrust : 0 kg</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -88,10 +88,10 @@
     <widget class="QWidget" name="CombustTempGraph" native="true">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>400</width>
-       <height>200</height>
+       <x>3</x>
+       <y>3</y>
+       <width>394</width>
+       <height>202</height>
       </rect>
      </property>
     </widget>
@@ -99,18 +99,18 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>200</y>
+       <y>205</y>
        <width>385</width>
-       <height>30</height>
+       <height>25</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>N/A</string>
+      <string>Combusted Gas Temperature : 0 °C</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -140,6 +140,12 @@
        <width>22</width>
        <height>141</height>
       </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="maximum">
+      <number>100</number>
      </property>
      <property name="orientation">
       <enum>Qt::Orientation::Vertical</enum>
@@ -186,8 +192,8 @@
         <colorrole role="WindowText">
          <brush brushstyle="SolidPattern">
           <color alpha="255">
-           <red>255</red>
-           <green>0</green>
+           <red>0</red>
+           <green>255</green>
            <blue>0</blue>
           </color>
          </brush>
@@ -197,8 +203,8 @@
         <colorrole role="WindowText">
          <brush brushstyle="SolidPattern">
           <color alpha="255">
-           <red>255</red>
-           <green>0</green>
+           <red>0</red>
+           <green>255</green>
            <blue>0</blue>
           </color>
          </brush>
@@ -237,28 +243,12 @@
       <string>TOGGLE</string>
      </property>
     </widget>
-    <widget class="QLabel" name="BLDC_Speed_Label">
+    <widget class="QLabel" name="BLDC_Power_Label">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>200</y>
-       <width>63</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>0%</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="BLDC_RPM">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
+       <x>27</x>
        <y>60</y>
-       <width>75</width>
+       <width>100</width>
        <height>71</height>
       </rect>
      </property>
@@ -297,19 +287,19 @@
       </font>
      </property>
      <property name="text">
-      <string>0
-RPM</string>
+      <string>0%
+POWER</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </widget>
-   <widget class="QFrame" name="CompPressureFrame">
+   <widget class="QFrame" name="InletPressureFrame">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>280</y>
+      <y>250</y>
       <width>400</width>
       <height>235</height>
      </rect>
@@ -323,32 +313,32 @@ RPM</string>
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QWidget" name="CompPressureGraph" native="true">
+    <widget class="QWidget" name="InletPressureGraph" native="true">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>400</width>
-       <height>200</height>
+       <x>3</x>
+       <y>3</y>
+       <width>394</width>
+       <height>202</height>
       </rect>
      </property>
     </widget>
-    <widget class="QLabel" name="CompPressureV">
+    <widget class="QLabel" name="InletPressureV">
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>200</y>
+       <y>205</y>
        <width>385</width>
-       <height>30</height>
+       <height>25</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>N/A</string>
+      <string>Inlet Pressure : 0 bar</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -373,7 +363,7 @@ RPM</string>
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QLabel" name="CompTempV">
+    <widget class="QLabel" name="InletTempV">
      <property name="geometry">
       <rect>
        <x>15</x>
@@ -388,17 +378,17 @@ RPM</string>
       </font>
      </property>
      <property name="text">
-      <string>Inlet Temperature : ? C</string>
+      <string>Inlet Temperature :</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
      </property>
     </widget>
-    <widget class="QLabel" name="FuelPressure">
+    <widget class="QLabel" name="FuelPressureV">
      <property name="geometry">
       <rect>
        <x>15</x>
-       <y>40</y>
+       <y>100</y>
        <width>250</width>
        <height>25</height>
       </rect>
@@ -415,11 +405,11 @@ RPM</string>
       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_6">
+    <widget class="QLabel" name="PressureRatioV">
      <property name="geometry">
       <rect>
        <x>15</x>
-       <y>70</y>
+       <y>40</y>
        <width>250</width>
        <height>25</height>
       </rect>
@@ -430,13 +420,55 @@ RPM</string>
       </font>
      </property>
      <property name="text">
-      <string>Housing Temp : </string>
+      <string>Pressure Ratio : </string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_7">
+    <widget class="QLabel" name="CoolantTempV">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>190</y>
+       <width>250</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Cooling Oil Temp :</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="CoolantPressureV">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>220</y>
+       <width>250</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Cooling Oil Pressure : </string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="FuelPumpPowerV">
      <property name="geometry">
       <rect>
        <x>15</x>
@@ -451,12 +483,167 @@ RPM</string>
       </font>
      </property>
      <property name="text">
-      <string>Housing Temp : </string>
+      <string>Fuel Pump Power :</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
      </property>
     </widget>
+    <widget class="QLabel" name="CoolantPumpPowerV">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>250</y>
+       <width>250</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Cooling Oil Pump Power : </string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="SparkPlugLabel">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>20</y>
+       <width>140</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Spark Plug Power :</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="SparkPlugPower">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>20</y>
+       <width>50</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>255</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>255</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled/>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+       <italic>true</italic>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>OFF</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="DateTime">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>250</y>
+       <width>250</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string notr="true">2025/9/1, 05:44:14</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="LatestLog">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>490</y>
+      <width>400</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string notr="true">N/A</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="OpenedFile">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>520</y>
+      <width>400</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string notr="true">N/A</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
