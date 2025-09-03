@@ -1,0 +1,9 @@
+# ninja log v6
+57	10279	7785844935345821	D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/timestamp	3aaa5e3508278472
+57	10279	7785844935345821	System_autogen/timestamp	3aaa5e3508278472
+57	10279	7785844935345821	System_autogen/mocs_compilation.cpp	3aaa5e3508278472
+57	10279	7785844935345821	D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/mocs_compilation.cpp	3aaa5e3508278472
+15599	16117	7785844989521890	System.exe	39059719d24d0bdc
+10280	15383	7785844936337368	CMakeFiles/System.dir/System_autogen/mocs_compilation.cpp.obj	3b5adf06fe14feae
+10289	15599	7785844936420984	CMakeFiles/System.dir/mainwindow.cpp.obj	8ac6fd50272a0f
+10284	15250	7785844936371951	CMakeFiles/System.dir/main.cpp.obj	f40ef1ad3a34fc30

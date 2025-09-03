@@ -1,5 +1,6 @@
+#pragma once
 #include "mainwindow.h"
-
+#include "HW_GPIO.h"
 #include <QDebug>
 
 #include "./ui_mainwindow.h"
@@ -85,7 +86,7 @@ void MainWindow::writeCsv(const FullData& s){
         framesAfterFlush = 0;
     }
     if(++framesAfterFsync>=fsyncFrames){
-        #if defined(Q_OS_ONIX)
+        #if defined(Q_OS_UNIX)
         ::fsync(logFile.handle());
         #endif
         #if defined(Q_OS_WIN)
@@ -101,7 +102,7 @@ void MainWindow::writeCsv(const FullData& s){
 void MainWindow::closeCsvFile(){
     if(!logFile.isOpen())return;
     logStream.flush();
-#if defined(QS_OS_UNIX)
+#if defined(Q_OS_UNIX)
     ::fsync(logFile.handle());
 #endif
 #if defined(Q_OS_WIN)

@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include<QtGlobal>
 #include <QChartView>
 #include <QDateTime>
 #include <QDateTimeAxis>

@@ -19,10 +19,16 @@ set(PROJECT_SOURCES
         mainwindow.ui
 )
 
+if (UNIX AND NOT APPLE)
+  target_link_libraries(myapp PRIVATE pigpio pthread)
+endif()
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(System
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        HW_GPIO.h
+        HW_GPIO.cpp
 
 
 
