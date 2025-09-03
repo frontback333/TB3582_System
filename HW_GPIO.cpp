@@ -1,4 +1,3 @@
-#pragma once
 #include "HW_GPIO.h"
 
 bool HW::GPIO::init(){
@@ -116,9 +115,11 @@ double HW::GPIO::IioChannel::readV(){
 bool HW::GPIO::iioOpenAddr(int bus, int addr7, int ch){
     Key key{bus, addr7, ch};
     if (iio.contains(key)) return true;
-    IioChannel c;
-    if (!c.openByAddr(bus, addr7, ch)) return false;
-    iio.insert(key, std::move(c));
+
+    auto chan = QSharedPointer<IioChannel>::create();
+    if (!chan->openByAddr(bus, addr7, ch)) return false;
+
+    iio.insert(key, chan);  // 포인터는 복사 가능 → 에러 없음
     return true;
 }
 
@@ -126,13 +127,16 @@ double HW::GPIO::iioReadVAddr(int bus, int addr7, int ch){
     Key key{bus, addr7, ch};
     auto it = iio.find(key);
     if (it == iio.end()) return std::numeric_limits<double>::quiet_NaN();
-    return it->readV();
+    return it.value()->readV();  // 포인터 역참조
 }
 
 void HW::GPIO::iioCloseAddr(int bus, int addr7, int ch){
     Key key{bus, addr7, ch};
     auto it = iio.find(key);
-    if (it != iio.end()) { it->close(); iio.erase(it); }
+    if (it != iio.end()){
+        it.value()->close();
+        iio.erase(it);
+    }
 }
 
 // ---------------- HX711 (endail/hx711) ----------------

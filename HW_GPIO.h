@@ -68,7 +68,7 @@ struct GPIO {
         void close(){ if (raw.isOpen()) raw.close(); }
     };
     using Key = std::tuple<int,int,int>; // (bus, addr7, ch)
-    QMap<Key, IioChannel> iio;
+    QMap<Key, QSharedPointer<IioChannel>> iio;
 
     bool   iioOpenAddr(int bus, int addr7, int ch);
     double iioReadVAddr(int bus, int addr7, int ch);

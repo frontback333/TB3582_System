@@ -140,7 +140,7 @@ private:
     QFile           logFile;
     QTextStream     logStream;
     QString         logPath;
-    const QString   BaseDir = QString("D:/TB-3582/System/DataLogs");
+    const QString   BaseDir = QString(QDir::currentPath()+"/DataLogs");
     int             framesAfterFlush, framesAfterFsync = 0;
     const int       flushFrames = 8;
     const int       fsyncFrames = 20;

@@ -109,6 +109,7 @@ D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/EWIEG
   C:/Qt/6.9.1/mingw_64/include/QtCore/QVariant \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QtCore \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QtCoreDepends \
+  C:/Qt/6.9.1/mingw_64/include/QtCore/QtGlobal \
   C:/Qt/6.9.1/mingw_64/include/QtCore/q17memory.h \
   C:/Qt/6.9.1/mingw_64/include/QtCore/q20algorithm.h \
   C:/Qt/6.9.1/mingw_64/include/QtCore/q20chrono.h \

@@ -105,7 +105,7 @@ build System.exe: CXX_EXECUTABLE_LINKER__System_Debug CMakeFiles/System.dir/Syst
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake-gui.exe -SD:\TB-3582\System -BD:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug"
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake-gui.exe -SD:\TB-3582\System -BD:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -117,7 +117,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe --regenerate-during-build -SD:\TB-3582\System -BD:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug"
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe --regenerate-during-build -SD:\TB-3582\System -BD:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -135,7 +135,7 @@ build list_install_components: phony
 # Utility command for install
 
 build CMakeFiles/install.util: CUSTOM_COMMAND all
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe -P cmake_install.cmake"
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe -P cmake_install.cmake"
   DESC = Install the project...
   pool = console
   restat = 1
@@ -147,7 +147,7 @@ build install: phony CMakeFiles/install.util
 # Utility command for install/local
 
 build CMakeFiles/install/local.util: CUSTOM_COMMAND all
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake"
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake"
   DESC = Installing only the local directory...
   pool = console
   restat = 1
@@ -159,7 +159,7 @@ build install/local: phony CMakeFiles/install/local.util
 # Utility command for install/strip
 
 build CMakeFiles/install/strip.util: CUSTOM_COMMAND all
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake"
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake"
   DESC = Installing the project stripped...
   pool = console
   restat = 1
@@ -183,7 +183,7 @@ build System_autogen: phony CMakeFiles/System_autogen System_autogen/include/ui_
 # Custom command for System_autogen\timestamp
 
 build System_autogen/timestamp System_autogen/mocs_compilation.cpp | ${cmake_ninja_workdir}System_autogen/timestamp ${cmake_ninja_workdir}System_autogen/mocs_compilation.cpp: CUSTOM_COMMAND C$:/Qt/6.9.1/mingw_64/bin/moc.exe C$:/Qt/6.9.1/mingw_64/bin/uic.exe || System_autogen_timestamp_deps
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe -E cmake_autogen D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/CMakeFiles/System_autogen.dir/AutogenInfo.json Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe -E touch D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/timestamp && C:\Qt\Tools\CMake_64\bin\cmake.exe -E cmake_transform_depfile Ninja gccdepfile D:/TB-3582/System D:/TB-3582/System D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/deps D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/CMakeFiles/d/1a3bac92fc6db941e1debacb37ba5c350a40a6e6f94187697498ba7fab0a4b83.d"
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\TB-3582\System\build\Desktop_Qt_6_9_1_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe -E cmake_autogen D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/CMakeFiles/System_autogen.dir/AutogenInfo.json Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe -E touch D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/timestamp && C:\Qt\Tools\CMake_64\bin\cmake.exe -E cmake_transform_depfile Ninja gccdepfile D:/TB-3582/System D:/TB-3582/System D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/deps D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/CMakeFiles/d/1a3bac92fc6db941e1debacb37ba5c350a40a6e6f94187697498ba7fab0a4b83.d"
   DESC = Automatic MOC and UIC for target System
   depfile = CMakeFiles\d\1a3bac92fc6db941e1debacb37ba5c350a40a6e6f94187697498ba7fab0a4b83.d
   deps = gcc

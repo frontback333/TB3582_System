@@ -108,6 +108,7 @@ System_autogen/timestamp: \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QVariant \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QtCore \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QtCoreDepends \
+	C:/Qt/6.9.1/mingw_64/include/QtCore/QtGlobal \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/q17memory.h \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/q20algorithm.h \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/q20chrono.h \
@@ -1412,6 +1413,8 @@ System_autogen/timestamp: \
 	C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wtypes.h \
 	C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wtypesbase.h \
 	D:/TB-3582/System/CMakeLists.txt \
+	D:/TB-3582/System/HW_GPIO.cpp \
+	D:/TB-3582/System/HW_GPIO.h \
 	D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/.qtc/package-manager/auto-setup.cmake \
 	D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/.qtc/package-manager/maintenance_tool_provider.cmake \
 	D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/CMakeFiles/3.30.5/CMakeCXXCompiler.cmake \

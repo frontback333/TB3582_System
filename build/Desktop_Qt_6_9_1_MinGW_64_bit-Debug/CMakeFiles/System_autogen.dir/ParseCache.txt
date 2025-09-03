@@ -110,6 +110,7 @@ D:/TB-3582/System/mainwindow.h
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/QVariant
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/QtCore
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/QtCoreDepends
+ mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/QtGlobal
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/q17memory.h
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/q20algorithm.h
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/q20chrono.h
@@ -1166,6 +1167,8 @@ D:/TB-3582/System/mainwindow.h
  mdp:C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wtypesbase.h
  mdp:D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/moc_predefs.h
  mdp:D:/TB-3582/System/mainwindow.h
-D:/TB-3582/System/main.cpp
+D:/TB-3582/System/HW_GPIO.h
 D:/TB-3582/System/mainwindow.cpp
  uic:./ui_mainwindow.h
+D:/TB-3582/System/main.cpp
+D:/TB-3582/System/HW_GPIO.cpp
