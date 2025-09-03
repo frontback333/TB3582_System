@@ -19,10 +19,6 @@ set(PROJECT_SOURCES
         mainwindow.ui
 )
 
-if (UNIX AND NOT APPLE)
-  target_link_libraries(System PRIVATE pigpio Threads::Threads hx711 lgpio)
-endif()
-
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(System
         MANUAL_FINALIZATION
@@ -57,6 +53,10 @@ target_link_libraries(System PRIVATE
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Gui
 )
+
+if (UNIX AND NOT APPLE)
+  target_link_libraries(System PRIVATE pigpio Threads::Threads hx711 lgpio)
+endif()
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
