@@ -20,7 +20,7 @@ set(PROJECT_SOURCES
 )
 
 if (UNIX AND NOT APPLE)
-  target_link_libraries(TB3582_System PRIVATE pigpio pthread)
+  target_link_libraries(System PRIVATE pigpio Threads::Threads hx711 lgpio)
 endif()
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
