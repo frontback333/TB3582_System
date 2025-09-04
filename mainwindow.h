@@ -133,6 +133,8 @@ class MainWindow : public QMainWindow {
 
     void on_BLDC_Speed_Bar_valueChanged(int value);
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow  *ui;
     HW::GPIO hw;

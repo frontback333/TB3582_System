@@ -312,3 +312,9 @@ void MainWindow::on_BLDC_Speed_Bar_valueChanged(int value){
     ui->BLDC_Speed_Bar->setValue(value);
     ui->BLDC_Power_Label->setText(QString("%1%\nPOWER").arg(BLDC_Power));
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    hw.hx.zero();
+}
+

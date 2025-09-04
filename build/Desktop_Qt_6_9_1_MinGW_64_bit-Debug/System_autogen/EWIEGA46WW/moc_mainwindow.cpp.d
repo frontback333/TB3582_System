@@ -83,6 +83,7 @@ D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/EWIEG
   C:/Qt/6.9.1/mingw_64/include/QtCharts/qxylegendmarker.h \
   C:/Qt/6.9.1/mingw_64/include/QtCharts/qxymodelmapper.h \
   C:/Qt/6.9.1/mingw_64/include/QtCharts/qxyseries.h \
+  C:/Qt/6.9.1/mingw_64/include/QtCore/QByteArray \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QCoreApplication \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QDateTime \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QDeadlineTimer \
@@ -96,6 +97,7 @@ D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/EWIEG
   C:/Qt/6.9.1/mingw_64/include/QtCore/QMetaType \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QMutex \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QObject \
+  C:/Qt/6.9.1/mingw_64/include/QtCore/QPair \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QPointF \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QRect \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QScopedPointer \
@@ -1164,4 +1166,5 @@ D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/EWIEG
   C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wnnc.h \
   C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wow64apiset.h \
   C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wtypes.h \
-  C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wtypesbase.h
+  C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wtypesbase.h \
+  D:/TB-3582/System/HW_GPIO.h
