@@ -141,7 +141,7 @@ void HW::GPIO::iioCloseAddr(int bus, int addr7, int ch){
 
 // ---------------- HX711 (endail/hx711) ----------------
 #ifdef Q_OS_UNIX
-struct GPIO::HX::Impl {
+struct HW::GPIO::HX::Impl {
     // SimpleHX711 사용 (필요시 AdvancedHX711로 변경 가능)
     HX711::SimpleHX711 dev;
     explicit Impl(int dt, int sck, int ref, int off, HX711::Rate rate)
