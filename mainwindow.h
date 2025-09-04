@@ -28,14 +28,6 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-const QString getBaseDir = []{
-    QDir d(QCoreApplication::applicationDirPath());
-    d.cdUp();                   // …\build
-    d.cdUp();                   // …\System
-    return QDir::cleanPath(d.filePath("DataLogs"));
-}();
-
-
 struct FullData {
     QDateTime   D_T;
     double      thrust = 0.0;         // kg
@@ -149,7 +141,6 @@ private:
     QFile           logFile;
     QTextStream     logStream;
     QString         logPath;
-    const QString   BaseDir = getBaseDir();
     int             framesAfterFlush, framesAfterFsync = 0;
     const int       flushFrames = 8;
     const int       fsyncFrames = 20;
@@ -158,6 +149,7 @@ private:
     bool            BLDC_Status;
     int             BLDC_Power;
 
+    static QString getBaseDir();
     void SyncDta(QFile &file, QTextStream *ts = nullptr);
     bool openCsvFile();
     void writeCsv(const FullData& s);

@@ -28,6 +28,13 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+QString MainWindow::getBaseDir(){
+    QDir d(QCoreApplication::applicationDirPath());
+    d.cdUp();
+    d.cdUp();
+    return QDir::cleanPath(d.filePath("DataLogs"));
+}
+
 void MainWindow::SamplingTick() {
     FullData s = readSensors();
     const qint64 now = s.D_T.toMSecsSinceEpoch();
@@ -45,9 +52,9 @@ void MainWindow::SyncDta(QFile &file, QTextStream *ts){
 }
 
 bool MainWindow::openCsvFile(){
-    const QString Fdir = BaseDir.isEmpty() ?
+    const QString Fdir = getBaseDir().isEmpty() ?
                             (QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/DataLogs")
-                            : BaseDir;
+                            : getBaseDir();
     QDir().mkpath(Fdir);
 
     const QString Fname = "log_"+QDateTime::currentDateTime().toString("yyyyMMdd_HHmmsszz") + ".csv";
