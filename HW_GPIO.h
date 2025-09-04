@@ -83,8 +83,8 @@ struct GPIO {
         // 초기화/옵션
         bool   begin(int dt = Pins::HX_DT, int sck = Pins::HX_SCK);
         void   setCalibration(int ref, int off);
-        bool   tare(int samples = 16);
-        double readKg(int samples = 35); // 단위 kg로 반환
+        void   zero();
+        double readKg(int samples = 8); // 단위 kg로 반환
         void   powerDown();
         void   powerUp();
 

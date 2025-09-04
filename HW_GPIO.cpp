@@ -141,19 +141,29 @@ void HW::GPIO::iioCloseAddr(int bus, int addr7, int ch){
 
 // ---------------- HX711 (endail/hx711) ----------------
 #ifdef Q_OS_UNIX
-struct HW::GPIO::HX::Impl {
-    // SimpleHX711 사용 (필요시 AdvancedHX711로 변경 가능)
-    HX711::SimpleHX711 dev;
-    explicit Impl(int dt, int sck, int ref, int off, HX711::Rate rate)
-        : dev(dt, sck, ref, off, rate) {}
+struct GPIO::HX::Impl {
+    SimpleHX711 dev;
+    Impl(int dt, int sck, int ref, long off, Rate rate)
+        : dev(dt, sck, ref, off, rate) {
+        dev.setUnit(Mass::Unit::KG);
+    }
 };
+
+// "1.23 kg" → 1.23 로 변환 (Mass에 바로 double 반환자가 없어서)
+static double toKg(const Mass& m) {
+    std::string s = m.toString(Mass::Unit::KG);
+    auto pos = s.find(' ');
+    if (pos != std::string::npos) s.resize(pos);
+    try { return std::stod(s); } catch (...) { return std::numeric_limits<double>::quiet_NaN(); }
+}
 #endif
 
-bool HW::GPIO::HX::begin(int dt, int sck){
+bool HW::GPIO::HX::begin(int dt, int sck) {
 #ifdef Q_OS_UNIX
     _dt = dt; _sck = sck;
-    // 기본 10Hz 보드 가정 (개조 80Hz면 Rate::HZ_80)
+    delete impl; impl = nullptr; _ok = false;
     try {
+        // 기본 10SPS 보드 가정 (80SPS 보드면 HZ_80로 교체)
         impl = new Impl(_dt, _sck, refUnit, offset, HX711::Rate::HZ_10);
         _ok = true;
     } catch (...) {
@@ -161,40 +171,36 @@ bool HW::GPIO::HX::begin(int dt, int sck){
     }
     return _ok;
 #else
-    Q_UNUSED(dt); Q_UNUSED(sck); return false;
+    Q_UNUSED(dt); Q_UNUSED(sck);
+    return false;
 #endif
 }
 
 void HW::GPIO::HX::setCalibration(int ref, int off){
     refUnit = ref; offset = off;
 #ifdef Q_OS_UNIX
-    if (_ok && impl){
-        delete impl;
-        impl = new Impl(_dt, _sck, refUnit, offset, HX711::Rate::HZ_10);
+    if (_ok) {
+        // 가장 단순한 방법: 재생성으로 적용
+        begin(_dt, _sck);
     }
 #endif
 }
 
-bool HW::GPIO::HX::tare(int samples){
+void HW::GPIO::HX::zero() {
 #ifdef Q_OS_UNIX
-    if (!_ok || !impl) return false;
-    return impl->dev.tare(samples);
-#else
-    Q_UNUSED(samples); return false;
+    if (_ok && impl) impl->dev.zero();
 #endif
 }
 
-double HW::GPIO::HX::readKg(int samples){
+double HW::GPIO::HX::readKg(int samples) {
 #ifdef Q_OS_UNIX
     if (!_ok || !impl) return std::numeric_limits<double>::quiet_NaN();
-    impl->dev.setUnit(HX711::Mass::Unit::KG);
-    auto m = impl->dev.weight(samples); // 중앙값/평균 내장
-    return m.convertTo(HX711::Mass::Unit::KG).value;
+    return toKg(impl->dev.weight(samples));  // 내부 평균/중앙값 처리
 #else
-    Q_UNUSED(samples); return std::numeric_limits<double>::quiet_NaN();
+    Q_UNUSED(samples);
+    return std::numeric_limits<double>::quiet_NaN();
 #endif
 }
-
 void HW::GPIO::HX::powerDown(){
 #ifdef Q_OS_UNIX
     if (_ok && impl) impl->dev.powerDown();
