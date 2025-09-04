@@ -1,5 +1,5 @@
+#pragma once
 #include "mainwindow.h"
-#include "HW_GPIO.h"
 #include <QDebug>
 
 #include "./ui_mainwindow.h"
@@ -151,7 +151,7 @@ FullData MainWindow::readSensors(){
     if (!once) {
         // HX711 (DT=GPIO26, SCK=GPIO22)
         hw.hx.begin(HW::Pins::HX_DT, HW::Pins::HX_SCK);
-        hw.hx.zero();
+        hw.hx.tare(16); // 필요 없으면 삭제
 
         // ADS1115 (IIO, 주소 고정 방식)
         //   0x4B (ADDR→ID_SC/GPIO1), 0x49 (ADDR→3V3)
@@ -165,7 +165,7 @@ FullData MainWindow::readSensors(){
     // ---------- 2) 실제 읽기 ----------
     // 2-1) 추력(kg): HX711
     {
-        double kg = hw.hx.readKg(8);              // 8샘플 평균
+        double kg = hw::HX.readKg(8);              // 8샘플 평균
         s.thrust = std::isfinite(kg) ? kg : 0.0;
     }
 

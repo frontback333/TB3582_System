@@ -1,5 +1,5 @@
+#pragma once
 #include "mainwindow.h"
-#include "HW_GPIO.h"
 #include <QDebug>
 
 #include "./ui_mainwindow.h"

@@ -141,17 +141,17 @@ void HW::GPIO::iioCloseAddr(int bus, int addr7, int ch){
 
 // ---------------- HX711 (endail/hx711) ----------------
 #ifdef Q_OS_UNIX
-struct GPIO::HX::Impl {
-    SimpleHX711 dev;
-    Impl(int dt, int sck, int ref, long off, Rate rate)
+struct HW::GPIO::HX::Impl {
+    HX711::SimpleHX711 dev;
+    Impl(int dt, int sck, int ref, long off, HX711::Rate rate)
         : dev(dt, sck, ref, off, rate) {
-        dev.setUnit(Mass::Unit::KG);
+        dev.setUnit(HX711::Mass::Unit::KG);
     }
 };
 
 // "1.23 kg" → 1.23 로 변환 (Mass에 바로 double 반환자가 없어서)
-static double toKg(const Mass& m) {
-    std::string s = m.toString(Mass::Unit::KG);
+static double toKg(const HX711::Mass& m) {
+    std::string s = m.toString(HX711::Mass::Unit::KG);
     auto pos = s.find(' ');
     if (pos != std::string::npos) s.resize(pos);
     try { return std::stod(s); } catch (...) { return std::numeric_limits<double>::quiet_NaN(); }
