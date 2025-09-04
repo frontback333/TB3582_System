@@ -97,7 +97,8 @@ struct GPIO {
         struct Impl;
         Impl* impl = nullptr;
 #endif
-    } hx;
+    };
+    HX hx;
 };
 
 struct Guard {

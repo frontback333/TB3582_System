@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#pragma once
+
 #include<QtGlobal>
 #include <QChartView>
 #include <QDateTime>
@@ -14,6 +16,9 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QtCharts>
+
+#include "HW_GPIO.h"
+
 #if defined(Q_OS_UNIX)
     #include<unistd.h>
 #endif
@@ -130,6 +135,7 @@ class MainWindow : public QMainWindow {
 
 private:
     Ui::MainWindow  *ui;
+    HW::GPIO hw;
     GraphComponent  thrustGraph;
     GraphComponent  combustTempGraph;
     GraphComponent  inletPressureGraph;

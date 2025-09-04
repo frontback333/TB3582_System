@@ -1,6 +1,5 @@
 #pragma once
 #include "mainwindow.h"
-#include "HW_GPIO.h"
 #include <QDebug>
 
 #include "./ui_mainwindow.h"
@@ -151,31 +150,31 @@ FullData MainWindow::readSensors(){
     static bool once = false;
     if (!once) {
         // HX711 (DT=GPIO26, SCK=GPIO22)
-        HW::GPIO::HX.begin(HW::Pins::HX_DT, HW::Pins::HX_SCK);
-        HW::GPIO::HX.tare(16); // 필요 없으면 삭제
+        hw.hx.begin(HW::Pins::HX_DT, HW::Pins::HX_SCK);
+        hw.hx.tare(16); // 필요 없으면 삭제
 
         // ADS1115 (IIO, 주소 고정 방식)
         //   0x4B (ADDR→ID_SC/GPIO1), 0x49 (ADDR→3V3)
         //   채널 매핑은 상황에 맞게 수정 가능
-        HW::GPIO.iioOpenAddr(1, 0x4B, 0); // inletPressure  → ADS@0x4B CH0
-        HW::GPIO.iioOpenAddr(1, 0x49, 1); // fuelPressure   → ADS@0x49 CH1
-        HW::GPIO.iioOpenAddr(1, 0x49, 2); // coolantPressure→ ADS@0x49 CH2
+        hw.iioOpenAddr(1, 0x4B, 0); // inletPressure  → ADS@0x4B CH0
+        hw.iioOpenAddr(1, 0x49, 1); // fuelPressure   → ADS@0x49 CH1
+        hw.iioOpenAddr(1, 0x49, 2); // coolantPressure→ ADS@0x49 CH2
         once = true;
     }
 
     // ---------- 2) 실제 읽기 ----------
     // 2-1) 추력(kg): HX711
     {
-        double kg = HW::GPIO::HX.readKg(8);              // 8샘플 평균
+        double kg = hw::HX.readKg(8);              // 8샘플 평균
         s.thrust = std::isfinite(kg) ? kg : 0.0;
     }
 
     // 2-2) 온도(°C): MAX6675 3채널 사용 예
     {
         // CS 핀 매핑: 7=CS0(연소가스), 8=CS1(흡입), 24=CS2(쿨런트)
-        double tComb = HW::GPIO.readMAX6675C(HW::Pins::SPI_CS_0);
-        double tInlt = HW::GPIO.readMAX6675C(HW::Pins::SPI_CS_1);
-        double tCool = HW::GPIO.readMAX6675C(HW::Pins::SPI_CS_2);
+        double tComb = hw.readMAX6675C(HW::Pins::SPI_CS_0);
+        double tInlt = hw.readMAX6675C(HW::Pins::SPI_CS_1);
+        double tCool = hw.readMAX6675C(HW::Pins::SPI_CS_2);
 
         if (!std::isfinite(tComb)) tComb = 0.0;
         if (!std::isfinite(tInlt)) tInlt = 0.0;
@@ -206,9 +205,9 @@ FullData MainWindow::readSensors(){
     static constexpr double P_MAX = 10.0;
 
     {
-        double v_inlet = HW::GPIO.iioReadVAddr(1, 0x4B, 0); // V
-        double v_fuel  = HW::GPIO.iioReadVAddr(1, 0x49, 1); // V
-        double v_cool  = HW::GPIO.iioReadVAddr(1, 0x49, 2); // V
+        double v_inlet = hw.iioReadVAddr(1, 0x4B, 0); // V
+        double v_fuel  = hw.iioReadVAddr(1, 0x49, 1); // V
+        double v_cool  = hw.iioReadVAddr(1, 0x49, 2); // V
 
         double p_inlet = map_lin(v_inlet, V_MIN, V_MAX, P_MIN, P_MAX);
         double p_fuel  = map_lin(v_fuel,  V_MIN, V_MAX, P_MIN, P_MAX);
@@ -223,7 +222,7 @@ FullData MainWindow::readSensors(){
     s.compressRatio = (s.inletPressure > 0) ? (s.inletPressure / 1.01325) : 0.0; // bar/atm
     s.fuelPumpPower    = BLDC_Power;  // 실제 펌프 PWM을 쓰면 그 값으로 대체
     s.coolantPumpPower = 0.0;         // TODO: 쿨런트 펌프 제어값/센서로 연결
-    s.SparkPlugStatus  = HW::GPIO.readSparkPower();
+    s.SparkPlugStatus  = hw.readSparkPower();
 
 #else
     auto rnd = QRandomGenerator::global();
