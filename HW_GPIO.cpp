@@ -1,5 +1,10 @@
 #include "HW_GPIO.h"
 
+#include <limits>
+#include <string>
+#include <thread>
+#include <chrono>
+
 bool HW::GPIO::init(){
 #ifdef Q_OS_UNIX
     if (gpioInitialise() < 0) return false;
@@ -195,7 +200,21 @@ void HW::GPIO::HX::zero() {
 double HW::GPIO::HX::readKg(int samples) {
 #ifdef Q_OS_UNIX
     if (!_ok || !impl) return std::numeric_limits<double>::quiet_NaN();
-    return toKg(impl->dev.weight(samples));  // 내부 평균/중앙값 처리
+
+        using namespace std::chrono;
+        impl->dev.setUnit(HX711::Mass::Unit::KG);
+
+        // 최대 5ms 동안 준비 폴링 (1ms 간격)
+        auto deadline = steady_clock::now() + milliseconds(5);
+        while (!impl->dev.isReady()) {
+            if (steady_clock::now() >= deadline)
+                return std::numeric_limits<double>::quiet_NaN(); // 이번 틱은 스킵
+            std::this_thread::sleep_for(milliseconds(1));
+        }
+
+        // 준비됐으면 1샘플만 (busy-wait 시간 최소화)
+        auto m = impl->dev.weight(std::size_t(1));
+        return toKg(m);
 #else
     Q_UNUSED(samples);
     return std::numeric_limits<double>::quiet_NaN();

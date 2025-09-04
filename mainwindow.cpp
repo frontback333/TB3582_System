@@ -256,8 +256,8 @@ FullData MainWindow::readSensors(){
     s.coolantPressure = coP;
     s.coolantPumpPower = coPP;
     s.SparkPlugStatus = (rnd->bounded(100) < 5) ? !s.SparkPlugStatus : s.SparkPlugStatus;
-    return s;
 #endif
+    return s;
 }
 
 void MainWindow::updLatestLog(){
