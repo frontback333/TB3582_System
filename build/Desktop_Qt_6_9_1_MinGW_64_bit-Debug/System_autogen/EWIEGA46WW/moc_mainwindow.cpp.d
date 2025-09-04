@@ -83,6 +83,7 @@ D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/EWIEG
   C:/Qt/6.9.1/mingw_64/include/QtCharts/qxylegendmarker.h \
   C:/Qt/6.9.1/mingw_64/include/QtCharts/qxymodelmapper.h \
   C:/Qt/6.9.1/mingw_64/include/QtCharts/qxyseries.h \
+  C:/Qt/6.9.1/mingw_64/include/QtCore/QCoreApplication \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QDateTime \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QDeadlineTimer \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QDir \

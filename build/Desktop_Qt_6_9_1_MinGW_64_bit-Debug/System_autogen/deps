@@ -82,6 +82,7 @@ System_autogen/timestamp: \
 	C:/Qt/6.9.1/mingw_64/include/QtCharts/qxylegendmarker.h \
 	C:/Qt/6.9.1/mingw_64/include/QtCharts/qxymodelmapper.h \
 	C:/Qt/6.9.1/mingw_64/include/QtCharts/qxyseries.h \
+	C:/Qt/6.9.1/mingw_64/include/QtCore/QCoreApplication \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QDateTime \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QDeadlineTimer \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QDir \

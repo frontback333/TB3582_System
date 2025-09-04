@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QDateTimeAxis>
 #include <QDir>
+#include<QCoreApplication>
 #include <QFile>
 #include <QLineSeries>
 #include <QMainWindow>
@@ -26,6 +27,14 @@ namespace Ui {
 class MainWindow;
 }
 QT_END_NAMESPACE
+
+const QString getBaseDir = []{
+    QDir d(QCoreApplication::applicationDirPath());
+    d.cdUp();                   // …\build
+    d.cdUp();                   // …\System
+    return QDir::cleanPath(d.filePath("DataLogs"));
+}();
+
 
 struct FullData {
     QDateTime   D_T;
@@ -140,7 +149,7 @@ private:
     QFile           logFile;
     QTextStream     logStream;
     QString         logPath;
-    const QString   BaseDir = QString(QDir::currentPath()+"/DataLogs");
+    const QString   BaseDir = getBaseDir();
     int             framesAfterFlush, framesAfterFsync = 0;
     const int       flushFrames = 8;
     const int       fsyncFrames = 20;
