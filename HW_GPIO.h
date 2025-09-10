@@ -14,9 +14,7 @@
 #include <limits>
 
 #ifdef Q_OS_UNIX
-// UNIX 전용 의존성
 #include <pigpio.h>
-// endail/hx711
 #include <hx711/common.h>
 #endif
 
@@ -42,8 +40,8 @@ struct Pins{
     static constexpr int SPI_CS_2       = 24; //24
     static constexpr int SPI_CS_3       = 25; //25
 
-    static constexpr int HX_SCK         = 22;
-    static constexpr int HX_DT          =26;
+    static constexpr int HX_SCK         = 5;
+    static constexpr int HX_DT          = 23;
 };
 
 struct GPIO {
@@ -76,8 +74,7 @@ struct GPIO {
 
     // HX711 (endail/hx711)
     struct HX {
-        // 캘리브레이션 파라미터
-        int    refUnit = -370;     // 예시 값(캘리브레이션 후 바꿔주세요)
+        int    refUnit = -370;     // 예시 값
         int    offset  = -367471;  // 예시 값
 
         // 초기화/옵션
@@ -92,8 +89,6 @@ struct GPIO {
         int _dt = Pins::HX_DT, _sck = Pins::HX_SCK;
         bool _ok = false;
 #ifdef Q_OS_UNIX
-        // endail/hx711
-        // 참고: AdvancedHX711로 바꾸고 싶으면 타입만 변경하면 됨
         struct Impl;
         Impl* impl = nullptr;
 #endif
