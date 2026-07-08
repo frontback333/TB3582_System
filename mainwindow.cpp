@@ -1,13 +1,18 @@
 #include "mainwindow.h"
 #include "HW_GPIO.h"
 #include <QDebug>
+#include <algorithm>
 
 #include "./ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-
+    if(!hw.init()){
+        qWarning()<<"GPIO INIT FAILED";
+        ui->BLDC_Toggle_Button->setEnabled(false);
+        ui->BLDC_Speed_Bar->setEnabled(false);
+    }
     thrustGraph.init(ui->ThrustGraph, "Thrust", "kg");
     combustTempGraph.init(ui->CombustTempGraph, "Combusted Gas Temperature", "°C");
     inletPressureGraph.init(ui->InletPressureGraph, "Inlet Pressure", "bar");
@@ -23,6 +28,11 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
+#ifdef Q_OS_UNIX
+    hw.setBLDCPower(0);
+    hw.hx.powerDown();
+    hw.shutdown();
+#endif
     if(FileOpened)closeCsvFile();
     delete ui;
 }
@@ -123,15 +133,15 @@ void MainWindow::updLabels(const FullData& s){
     ui->CombustTempV->setText(QString("Combusted Gas Temperature : %1 °C").arg(s.combustTemp,0,'f',2));
     ui->InletPressureV->setText(QString("Inlet Pressure : %1 bar").arg(s.inletPressure,0,'f',2));
 
-    ui->InletTempV->setText(QString("Inlet Temperature : %1 °C").arg(s.inletPressure,0,'f',2));
-    ui->PressureRatioV->setText(QString("Pressure Ratio : %1 ").arg(s.inletPressure,0,'f',2));
+    ui->InletTempV->setText(QString("Inlet Temperature : %1 °C").arg(s.inletTemp,0,'f',2));
+    ui->PressureRatioV->setText(QString("Pressure Ratio : %1 ").arg(s.compressRatio,0,'f',2));
 
-    ui->FuelPressureV->setText(QString("Fuel Pressure : %1 bar").arg(s.inletPressure,0,'f',2));
-    ui->FuelPumpPowerV->setText(QString("Fuel Pump Power : %1 %").arg(s.inletPressure,0,'f',2));
+    ui->FuelPressureV->setText(QString("Fuel Pressure : %1 bar").arg(s.fuelPressure,0,'f',2));
+    ui->FuelPumpPowerV->setText(QString("Fuel Pump Power : %1 %").arg(s.fuelPumpPower,0,'f',2));
 
-    ui->CoolantTempV->setText(QString("Cooling Oil Temp : %1 °C").arg(s.inletPressure,0,'f',2));
-    ui->CoolantPressureV->setText(QString("Cooling Oil Pressure : %1 bar").arg(s.inletPressure,0,'f',2));
-    ui->CoolantPumpPowerV->setText(QString("Cooling Oil Pump Power : %1 %").arg(s.inletPressure,0,'f',2));
+    ui->CoolantTempV->setText(QString("Cooling Oil Temp : %1 °C").arg(s.coolantTemp,0,'f',2));
+    ui->CoolantPressureV->setText(QString("Cooling Oil Pressure : %1 bar").arg(s.coolantPressure,0,'f',2));
+    ui->CoolantPumpPowerV->setText(QString("Cooling Oil Pump Power : %1 %").arg(s.coolantPumpPower,0,'f',2));
 
     ui->SparkPlugPower->setText(s.SparkPlugStatus ? "ON":"OFF");
     ui->SparkPlugPower->setStyleSheet(
@@ -142,88 +152,82 @@ void MainWindow::updLabels(const FullData& s){
 
 //밑 코드 교체하기
 
+double MainWindow::pressureFromVoltage(double voltage){
+    if (!std::isfinite(voltage))
+        return std::numeric_limits<double>::quiet_NaN();
+
+    constexpr double V_MIN = 0.5;
+    constexpr double V_MAX = 4.5;
+    constexpr double P_MIN = 0.0;
+    constexpr double P_MAX = 10.0;
+
+    const double clamped = std::clamp(voltage, V_MIN, V_MAX);
+
+    return P_MIN + (clamped - V_MIN) * (P_MAX - P_MIN) / (V_MAX - V_MIN);
+}
+
 FullData MainWindow::readSensors(){
     FullData s;
     s.D_T = QDateTime::currentDateTime();
+
 #ifdef Q_OS_UNIX
-    // ---------- 1) 최초 1회: 채널/장치 오픈 ----------
-    static bool once = false;
-    if (!once) {
-        // HX711 (DT=GPIO26, SCK=GPIO22)
-        hw.hx.begin(HW::Pins::HX_DT, HW::Pins::HX_SCK);
-        hw.hx.zero();
+    static bool hxInitialized = false;
+    static bool adsInitialized = false;
 
-        // ADS1115 (IIO, 주소 고정 방식)
-        //   0x4B (ADDR→ID_SC/GPIO1), 0x49 (ADDR→3V3)
-        //   채널 매핑은 상황에 맞게 수정 가능
-        hw.iioOpenAddr(1, 0x4B, 0); // inletPressure  → ADS@0x4B CH0
-        hw.iioOpenAddr(1, 0x49, 1); // fuelPressure   → ADS@0x49 CH1
-        hw.iioOpenAddr(1, 0x49, 2); // coolantPressure→ ADS@0x49 CH2
-        once = true;
+    static QElapsedTimer max6675Timer;
+    static double lastCombustTemp = std::numeric_limits<double>::quiet_NaN();
+    static double lastInletTemp = std::numeric_limits<double>::quiet_NaN();
+    static double lastCoolantTemp = std::numeric_limits<double>::quiet_NaN();
+
+    if (!max6675Timer.isValid())
+        max6675Timer.start();
+
+    if (!hxInitialized) {
+        hxInitialized = hw.hx.begin();
+        if (hxInitialized)
+            hw.hx.zero();
     }
 
-    // ---------- 2) 실제 읽기 ----------
-    // 2-1) 추력(kg): HX711
-    {
-        double kg = hw.hx.readKg(8);              // 8샘플 평균
-        s.thrust = std::isfinite(kg) ? kg : 0.0;
+    if (!adsInitialized) {
+        adsInitialized = true;
+        for(int i = 0; i < 4; i++){
+            adsInitialized &= hw.iioOpenAddr(1, HW::Pins::ADDR_VCC, i);
+            adsInitialized &= hw.iioOpenAddr(1, HW::Pins::ADDR_SCL, i);
+        }
     }
 
-    // 2-2) 온도(°C): MAX6675 3채널 사용 예
-    {
-        // CS 핀 매핑: 7=CS0(연소가스), 8=CS1(흡입), 24=CS2(쿨런트)
-        double tComb = hw.readMAX6675C(HW::Pins::SPI_CS_0);
-        double tInlt = hw.readMAX6675C(HW::Pins::SPI_CS_1);
-        double tCool = hw.readMAX6675C(HW::Pins::SPI_CS_2);
+    s.thrust = hw.hx.readKg();
 
-        if (!std::isfinite(tComb)) tComb = 0.0;
-        if (!std::isfinite(tInlt)) tInlt = 0.0;
-        if (!std::isfinite(tCool)) tCool = 0.0;
+    // MAX6675 변환 시간이 약 220ms
+    if (max6675Timer.elapsed() >= MAX6675Ms) {
+        const double combust = hw.readMAX6675C(HW::Pins::SPI_CS_0);
+        const double inlet = hw.readMAX6675C(HW::Pins::SPI_CS_1);
+        const double coolant = hw.readMAX6675C(HW::Pins::SPI_CS_2);
 
-        s.combustTemp  = tComb;
-        s.inletTemp    = tInlt;
-        s.coolantTemp  = tCool;
+        if (std::isfinite(combust)) lastCombustTemp = combust;
+        if (std::isfinite(inlet)) lastInletTemp = inlet;
+        if (std::isfinite(coolant)) lastCoolantTemp = coolant;
+
+        max6675Timer.restart();
     }
 
-    // 2-3) 압력(bar): ADS1115 (전압→압력 선형 환산)
-    auto map_lin = [](double x, double xa, double xb, double ya, double yb){
-        if (!std::isfinite(x)) return std::numeric_limits<double>::quiet_NaN();
-        if (xb == xa) return std::numeric_limits<double>::quiet_NaN();
-        double y = ya + (x - xa) * (yb - ya) / (xb - xa);
-        return y;
-    };
-    auto clamp = [](double v, double lo, double hi){
-        if (!std::isfinite(v)) return v;
-        if (v < lo) v = lo; if (v > hi) v = hi; return v;
-    };
+    s.combustTemp = lastCombustTemp;
+    s.inletTemp = lastInletTemp;
+    s.coolantTemp = lastCoolantTemp;
 
-    // TODO: 센서 스펙에 맞게 보정하세요.
-    // 예시(아주 흔함): 0.5–4.5 V → 0–10 bar (래티오메트릭 트랜스듀서)
-    static constexpr double V_MIN = 0.5;
-    static constexpr double V_MAX = 4.5;
-    static constexpr double P_MIN = 0.0;
-    static constexpr double P_MAX = 10.0;
+    s.inletPressure = pressureFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_VCC, HW::Pins::Comp_P_Ch));
+    s.fuelPressure = pressureFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_VCC, HW::Pins::Fuel_P_Ch));
+    s.coolantPressure = pressureFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_VCC, HW::Pins::Oil_P_Ch));
 
-    {
-        double v_inlet = hw.iioReadVAddr(1, 0x4B, 0); // V
-        double v_fuel  = hw.iioReadVAddr(1, 0x49, 1); // V
-        double v_cool  = hw.iioReadVAddr(1, 0x49, 2); // V
-
-        double p_inlet = map_lin(v_inlet, V_MIN, V_MAX, P_MIN, P_MAX);
-        double p_fuel  = map_lin(v_fuel,  V_MIN, V_MAX, P_MIN, P_MAX);
-        double p_cool  = map_lin(v_cool,  V_MIN, V_MAX, P_MIN, P_MAX);
-
-        if (std::isfinite(p_inlet)) s.inletPressure   = clamp(p_inlet, P_MIN, P_MAX);
-        if (std::isfinite(p_fuel )) s.fuelPressure    = clamp(p_fuel , P_MIN, P_MAX);
-        if (std::isfinite(p_cool )) s.coolantPressure = clamp(p_cool , P_MIN, P_MAX);
+    if (std::isfinite(s.inletPressure)) {
+        s.compressRatio = s.inletPressure / 1.01325;
+    } else {
+        s.compressRatio = std::numeric_limits<double>::quiet_NaN();
     }
 
-    // 2-4) 파생값/상태
-    s.compressRatio = (s.inletPressure > 0) ? (s.inletPressure / 1.01325) : 0.0; // bar/atm
-    s.fuelPumpPower    = BLDC_Power;  // 실제 펌프 PWM을 쓰면 그 값으로 대체
-    s.coolantPumpPower = 0.0;         // TODO: 쿨런트 펌프 제어값/센서로 연결
-    s.SparkPlugStatus  = hw.readSparkPower();
-
+    s.fuelPumpPower = BLDC_Power;
+    s.coolantPumpPower = 0;
+    s.SparkPlugStatus = hw.readSparkPower();
 #else
     auto rnd = QRandomGenerator::global();
     static double t=0, ct=20, ip=2.0, it=20, pr=1.0, fp=0.3, fpp=50, coT=35, coP=1.2, coPP=60;
@@ -294,21 +298,31 @@ void MainWindow::updLatestLog(){
 
 void MainWindow::on_BLDC_Toggle_Button_clicked() {
     BLDC_Status = !BLDC_Status;
+    qDebug()<<BLDC_Status;
     if(!BLDC_Status){
-        ui->BLDC_Status_Label->setText("OFF");
-        ui->BLDC_Status_Label->setStyleSheet("QLabel{color: #00ff00}");
         BLDC_Power = 0;
         ui->BLDC_Speed_Bar->setValue(BLDC_Power);
+        ui->BLDC_Status_Label->setText("OFF");
+        ui->BLDC_Status_Label->setStyleSheet("QLabel{color: #00ff00}");
         ui->BLDC_Power_Label->setText(QString("%1%\nPOWER").arg(BLDC_Power));
+#ifdef Q_OS_UNIX
+        hw.setBLDCPower(0);
+#endif
     }else{
         ui->BLDC_Status_Label->setText("ON");
         ui->BLDC_Status_Label->setStyleSheet("QLabel{color: #ff0000;}");
+#ifdef Q_OS_UNIX
+        hw.setBLDCPower(BLDC_Power);
+#endif
     }
 }
 
 void MainWindow::on_BLDC_Speed_Bar_valueChanged(int value){
     if(!BLDC_Status)value = 0;
     BLDC_Power = value;
+#ifdef Q_OS_UNIX
+    hw.setBLDCPower(BLDC_Power);
+#endif
     ui->BLDC_Speed_Bar->setValue(value);
     ui->BLDC_Power_Label->setText(QString("%1%\nPOWER").arg(BLDC_Power));
 }

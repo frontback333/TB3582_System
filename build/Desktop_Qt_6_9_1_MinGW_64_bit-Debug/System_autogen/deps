@@ -101,6 +101,7 @@ System_autogen/timestamp: \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QRect \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QScopedPointer \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QSharedDataPointer \
+	C:/Qt/6.9.1/mingw_64/include/QtCore/QSharedPointer \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QSize \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QSizeF \
 	C:/Qt/6.9.1/mingw_64/include/QtCore/QStandardPaths \

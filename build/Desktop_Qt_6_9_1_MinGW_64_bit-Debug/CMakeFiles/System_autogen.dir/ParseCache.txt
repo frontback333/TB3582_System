@@ -104,6 +104,7 @@ D:/TB-3582/System/mainwindow.h
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/QRect
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/QScopedPointer
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/QSharedDataPointer
+ mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/QSharedPointer
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/QSize
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/QSizeF
  mdp:C:/Qt/6.9.1/mingw_64/include/QtCore/QStandardPaths

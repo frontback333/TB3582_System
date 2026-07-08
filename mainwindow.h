@@ -17,6 +17,8 @@
 #include <QTimer>
 #include <QtCharts>
 
+#include <cmath>
+
 #include "HW_GPIO.h"
 
 #if defined(Q_OS_UNIX)
@@ -90,6 +92,8 @@ struct GraphComponent {
         layout->addWidget(view);
     }
     void append(qint64 t_ms, double value, qint64 windowMs) {
+        if (!std::isfinite(value))
+            return;
         const qint64 cutOffTime = t_ms - windowMs;
 
         auto sPoints = series->points();
@@ -143,21 +147,23 @@ private:
     GraphComponent  inletPressureGraph;
 
     QTimer          renewTimer;
-    const int       renewMs = 250;
+    const int       renewMs = 100;
     const qint64    WindowMs = 30 * 1000;
+    const int       MAX6675Ms = 250;
 
     QFile           logFile;
     QTextStream     logStream;
     QString         logPath;
     int             framesAfterFlush, framesAfterFsync = 0;
-    const int       flushFrames = 8;
-    const int       fsyncFrames = 20;
+    const int       flushFrames = 20;
+    const int       fsyncFrames = 50;
     bool            FileOpened = false;
 
-    bool            BLDC_Status;
-    int             BLDC_Power;
+    bool            BLDC_Status = false;
+    int             BLDC_Power = 0;
 
     static QString getBaseDir();
+    static double pressureFromVoltage(double voltage);
     void SyncDta(QFile &file, QTextStream *ts = nullptr);
     bool openCsvFile();
     void writeCsv(const FullData& s);

@@ -102,6 +102,7 @@ D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/EWIEG
   C:/Qt/6.9.1/mingw_64/include/QtCore/QRect \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QScopedPointer \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QSharedDataPointer \
+  C:/Qt/6.9.1/mingw_64/include/QtCore/QSharedPointer \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QSize \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QSizeF \
   C:/Qt/6.9.1/mingw_64/include/QtCore/QStandardPaths \

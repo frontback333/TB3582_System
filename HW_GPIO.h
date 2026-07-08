@@ -9,8 +9,9 @@
 #include<QString>
 #include <QMap>
 #include <QPair>
-#include<tuple>
 #include <QByteArray>
+#include <QSharedPointer>
+#include<tuple>
 #include <limits>
 
 #ifdef Q_OS_UNIX
@@ -32,6 +33,11 @@ struct Pins{
 
     static constexpr int ADDR_SCL       = 0x4B;
     static constexpr int ADDR_VCC       = 0x49;
+
+    static constexpr int Fuel_P_Ch      = 0;
+    static constexpr int AB_P_Ch        = 1;
+    static constexpr int Comp_P_Ch      = 2;
+    static constexpr int Oil_P_Ch       = 3;
 
     static constexpr int SPI_MISO       = 9; //9
     static constexpr int SPI_CLK        = 11; //11
@@ -81,7 +87,7 @@ struct GPIO {
         bool   begin(int dt = Pins::HX_DT, int sck = Pins::HX_SCK);
         void   setCalibration(int ref, int off);
         void   zero();
-        double readKg(int samples = 8); // 단위 kg로 반환
+        double readKg(); // 단위 kg로 반환
         void   powerDown();
         void   powerUp();
 

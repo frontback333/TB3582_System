@@ -4,6 +4,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <cmath>
 
 bool HW::GPIO::init(){
 #ifdef Q_OS_UNIX
@@ -114,7 +115,7 @@ double HW::GPIO::IioChannel::readV(){
     bool ok=false;
     int code = QString::fromUtf8(b).trimmed().toInt(&ok);
     if (!ok) return std::numeric_limits<double>::quiet_NaN();
-    return code * scale;
+    return code * scale / 1000;
 }
 
 bool HW::GPIO::iioOpenAddr(int bus, int addr7, int ch){
@@ -197,26 +198,19 @@ void HW::GPIO::HX::zero() {
 #endif
 }
 
-double HW::GPIO::HX::readKg(int samples) {
+double HW::GPIO::HX::readKg() {
 #ifdef Q_OS_UNIX
-    if (!_ok || !impl) return std::numeric_limits<double>::quiet_NaN();
+    static double kg = std::numeric_limits<double>::quiet_NaN();
+    if (!_ok || !impl || !impl->dev.waitReady(5)) return kg;
+    try {
+        const double newRead = impl->dev.getUnits(1);
 
-        using namespace std::chrono;
-        impl->dev.setUnit(HX711::Mass::Unit::KG);
+        if (std::isfinite(newRead))
+            kg = newRead;
 
-        // 최대 5ms 동안 준비 폴링 (1ms 간격)
-        auto deadline = steady_clock::now() + milliseconds(5);
-        while (!impl->dev.isReady()) {
-            if (steady_clock::now() >= deadline)
-                return std::numeric_limits<double>::quiet_NaN(); // 이번 틱은 스킵
-            std::this_thread::sleep_for(milliseconds(1));
-        }
-
-        // 준비됐으면 1샘플만 (busy-wait 시간 최소화)
-        auto m = impl->dev.weight(std::size_t(1));
-        return toKg(m);
+        return kg;
+    } catch (...){return kg;}
 #else
-    Q_UNUSED(samples);
     return std::numeric_limits<double>::quiet_NaN();
 #endif
 }
