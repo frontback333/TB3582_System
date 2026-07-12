@@ -201,9 +201,9 @@ void HW::GPIO::HX::zero() {
 double HW::GPIO::HX::readKg() {
 #ifdef Q_OS_UNIX
     static double kg = std::numeric_limits<double>::quiet_NaN();
-    if (!_ok || !impl || !impl->dev.waitReady(5)) return kg;
+    if (!_ok || !impl || !impl->dev.waitReady(std::chrono::milliseconds(5))) return kg;
     try {
-        const double newRead = impl->dev.getUnits(1);
+        const double newRead = impl->dev.waitReady(std::chrono::milliseconds(1));
 
         if (std::isfinite(newRead))
             kg = newRead;
