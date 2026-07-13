@@ -31,7 +31,7 @@ struct Pins{
     static constexpr int I2C_SCL        = 3; //3
     static constexpr int I2C_SDA        = 2; //2
 
-    static constexpr int ADDR_SCL       = 0x4B;
+    static constexpr int ADDR_SCL       = 0x48;
     static constexpr int ADDR_VCC       = 0x49;
 
     static constexpr int Fuel_P_Ch      = 0;

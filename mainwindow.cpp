@@ -357,6 +357,7 @@ void MainWindow::on_pushButton_clicked(){
     if (!hwReady)
         return;
 #endif
+    qDebug()<<"tare";
     hw.hx.zero();
 }
 
