@@ -158,6 +158,7 @@ private:
     const int       flushFrames = 20;
     const int       fsyncFrames = 50;
     bool            FileOpened = false;
+    bool hwReady = false;
 
     bool            BLDC_Status = false;
     int             BLDC_Power = 0;

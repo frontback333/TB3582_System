@@ -194,7 +194,7 @@ void HW::GPIO::HX::setCalibration(int ref, int off){
 
 void HW::GPIO::HX::zero() {
 #ifdef Q_OS_UNIX
-    if (_ok && impl) impl->dev.zero();
+    if (_ok && impl&& impl->dev.waitReady(std::chrono::milliseconds(10))) impl->dev.zero();
 #endif
 }
 

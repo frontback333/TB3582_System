@@ -8,7 +8,10 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    if(!hw.init()){
+
+    hwReady = hw.init();
+
+    if(!hwReady){
         qWarning()<<"GPIO INIT FAILED";
         ui->BLDC_Toggle_Button->setEnabled(false);
         ui->BLDC_Speed_Bar->setEnabled(false);
@@ -29,9 +32,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() {
 #ifdef Q_OS_UNIX
-    hw.setBLDCPower(0);
-    hw.hx.powerDown();
-    hw.shutdown();
+    if(hwReady){
+        hw.setBLDCPower(0);
+        hw.hx.powerDown();
+        hw.shutdown();
+    }
 #endif
     if(FileOpened)closeCsvFile();
     delete ui;
@@ -171,6 +176,20 @@ FullData MainWindow::readSensors(){
     s.D_T = QDateTime::currentDateTime();
 
 #ifdef Q_OS_UNIX
+    if (!hwReady) {
+            s.thrust = std::numeric_limits<double>::quiet_NaN();
+            s.combustTemp = std::numeric_limits<double>::quiet_NaN();
+            s.inletPressure = std::numeric_limits<double>::quiet_NaN();
+            s.inletTemp = std::numeric_limits<double>::quiet_NaN();
+            s.compressRatio = std::numeric_limits<double>::quiet_NaN();
+            s.fuelPressure = std::numeric_limits<double>::quiet_NaN();
+            s.fuelPumpPower = BLDC_Power;
+            s.coolantTemp = std::numeric_limits<double>::quiet_NaN();
+            s.coolantPressure = std::numeric_limits<double>::quiet_NaN();
+            s.coolantPumpPower = std::numeric_limits<double>::quiet_NaN();
+            s.SparkPlugStatus = false;
+            return s;
+        }
     static bool hxInitialized = false;
     static bool adsInitialized = false;
 
@@ -184,8 +203,10 @@ FullData MainWindow::readSensors(){
 
     if (!hxInitialized) {
         hxInitialized = hw.hx.begin();
-        if (hxInitialized)
-            hw.hx.zero();
+        if (!hxInitialized)
+                qWarning() << "HX711 failed.";
+        //if (hxInitialized)
+        //    hw.hx.zero();
     }
 
     if (!adsInitialized) {
@@ -306,13 +327,17 @@ void MainWindow::on_BLDC_Toggle_Button_clicked() {
         ui->BLDC_Status_Label->setStyleSheet("QLabel{color: #00ff00}");
         ui->BLDC_Power_Label->setText(QString("%1%\nPOWER").arg(BLDC_Power));
 #ifdef Q_OS_UNIX
-        hw.setBLDCPower(0);
+        if(hwReady){
+            hw.setBLDCPower(0);
+        }
 #endif
     }else{
         ui->BLDC_Status_Label->setText("ON");
         ui->BLDC_Status_Label->setStyleSheet("QLabel{color: #ff0000;}");
 #ifdef Q_OS_UNIX
-        hw.setBLDCPower(BLDC_Power);
+        if(hwReady){
+            hw.setBLDCPower(BLDC_Power);
+        }
 #endif
     }
 }
@@ -327,8 +352,11 @@ void MainWindow::on_BLDC_Speed_Bar_valueChanged(int value){
     ui->BLDC_Power_Label->setText(QString("%1%\nPOWER").arg(BLDC_Power));
 }
 
-void MainWindow::on_pushButton_clicked()
-{
+void MainWindow::on_pushButton_clicked(){
+#ifdef Q_OS_UNIX
+    if (!hwReady)
+        return;
+#endif
     hw.hx.zero();
 }
 
