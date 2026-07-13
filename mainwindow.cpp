@@ -246,7 +246,7 @@ FullData MainWindow::readSensors(){
         s.compressRatio = std::numeric_limits<double>::quiet_NaN();
     }
 
-    s.fuelPumpPower = BLDC_Power;
+    s.fuelPumpPower = 0;
     s.coolantPumpPower = 0;
     s.SparkPlugStatus = hw.readSparkPower();
 #else
