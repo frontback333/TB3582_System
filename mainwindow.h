@@ -169,6 +169,7 @@ private:
     static QString getBaseDir();
     static double pressureFromVoltage(double voltage);
     static double throttleFromVoltage(double voltage);
+    static double batteryVoltageFromVoltage(double voltage);
     void SyncDta(QFile &file, QTextStream *ts = nullptr);
     bool openCsvFile();
     void writeCsv(const FullData& s);

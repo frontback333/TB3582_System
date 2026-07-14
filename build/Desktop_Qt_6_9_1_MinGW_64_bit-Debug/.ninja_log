@@ -53,3 +53,11 @@
 2932	9696	8057178656781888	CMakeFiles/System.dir/main.cpp.obj	f40ef1ad3a34fc30
 2936	10066	8057178656836981	CMakeFiles/System.dir/mainwindow.cpp.obj	8ac6fd50272a0f
 10066	10541	8057178728128308	System.exe	23bb3478cfa3166c
+15	2598	8057185977020190	System_autogen/timestamp	3aaa5e3508278472
+15	2598	8057185977020190	System_autogen/mocs_compilation.cpp	3aaa5e3508278472
+15	2598	8057185977020190	D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/timestamp	3aaa5e3508278472
+15	2598	8057185977020190	D:/TB-3582/System/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/System_autogen/mocs_compilation.cpp	3aaa5e3508278472
+2604	8485	8057185978355778	CMakeFiles/System.dir/main.cpp.obj	f40ef1ad3a34fc30
+2599	8556	8057185978300691	CMakeFiles/System.dir/System_autogen/mocs_compilation.cpp.obj	3b5adf06fe14feae
+2609	8915	8057185978405774	CMakeFiles/System.dir/mainwindow.cpp.obj	8ac6fd50272a0f
+8916	9402	8057186041470555	System.exe	23bb3478cfa3166c

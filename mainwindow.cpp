@@ -184,6 +184,16 @@ double MainWindow::throttleFromVoltage(double voltage){
     return std::clamp(voltage, 0.0, V_MAX) * 100.0 / V_MAX;
 }
 
+double MainWindow::batteryVoltageFromVoltage(double voltage){
+    if (!std::isfinite(voltage))
+        return std::numeric_limits<double>::quiet_NaN();
+
+    constexpr double V_SCALE = 6.1;
+    constexpr double V_OFFSET = 0.0;
+
+    return voltage * V_SCALE + V_OFFSET;
+}
+
 FullData MainWindow::readSensors(){
     FullData s;
     s.D_T = QDateTime::currentDateTime();
@@ -263,7 +273,7 @@ FullData MainWindow::readSensors(){
         s.compressRatio = std::numeric_limits<double>::quiet_NaN();
     }
 
-    s.batteryVoltage = hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::Battery_V_Ch);
+    s.batteryVoltage = batteryVoltageFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::Battery_V_Ch));
     s.fuelPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::FuelPump_Throttle_Ch));
     s.afterburnerPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::AB_Throttle_Ch));
     s.coolantPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::Oil_Throttle_Ch));
