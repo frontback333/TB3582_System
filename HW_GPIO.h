@@ -39,6 +39,11 @@ struct Pins{
     static constexpr int Comp_P_Ch      = 2;
     static constexpr int Oil_P_Ch       = 3;
 
+    static constexpr int Battery_V_Ch           = 0;
+    static constexpr int FuelPump_Throttle_Ch   = 1;
+    static constexpr int AB_Throttle_Ch         = 2;
+    static constexpr int Oil_Throttle_Ch        = 3;
+
     static constexpr int SPI_MISO       = 9; //9
     static constexpr int SPI_CLK        = 11; //11
     static constexpr int SPI_CS_0       = 7; //7

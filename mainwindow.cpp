@@ -83,10 +83,10 @@ bool MainWindow::openCsvFile(){
     logStream.setDevice(&logFile);
 
     logStream << "timeStamp,"
-              << "ThrustV,CombustTempV,InletPressureV,"
+              << "ThrustV,CombustTempV,InletPressureV,ABPressureV,"
               << "InletTempV,PressureRatioV,"
-              << "FuelPressureV,FuelPumpPowerV,"
-              << "CoolantTempV,CoolantPressureV,CoolantPumpPowerV,"
+              << "FuelPressureV,FuelPumpPowerV,ABPumpPowerV,"
+              << "CoolantTempV,CoolantPressureV,CoolantPumpPowerV,BatteryVoltage,"
               << "SparkPlugStatus\n";
     logStream.flush();
     framesAfterFlush = 8;
@@ -99,8 +99,9 @@ void MainWindow::writeCsv(const FullData& s){
     const QString D_T = s.D_T.toString(Qt::ISODateWithMs);
     logStream << D_T << ','
               << s.thrust << ',' << s.combustTemp << ',' << s.inletPressure << ','
-              << s.inletTemp << ',' << s.compressRatio << ',' << s.fuelPressure << ',' << s.fuelPumpPower << ','
-              << s.coolantTemp << ',' << s.coolantPressure << ',' << s.coolantPumpPower << ','
+              << s.afterburnerPressure << ','
+              << s.inletTemp << ',' << s.compressRatio << ',' << s.fuelPressure << ',' << s.fuelPumpPower << ',' << s.afterburnerPumpPower << ','
+              << s.coolantTemp << ',' << s.coolantPressure << ',' << s.coolantPumpPower << ',' << s.batteryVoltage << ','
               << (s.SparkPlugStatus ? "ON" : "OFF") << '\n';
     if(++framesAfterFlush >= flushFrames){
         logStream.flush();
@@ -137,16 +138,19 @@ void MainWindow::updLabels(const FullData& s){
     ui->ThrustV->setText(QString("Thrust : %1 kg").arg(s.thrust,0,'f',2));
     ui->CombustTempV->setText(QString("Combusted Gas Temperature : %1 °C").arg(s.combustTemp,0,'f',2));
     ui->InletPressureV->setText(QString("Inlet Pressure : %1 bar").arg(s.inletPressure,0,'f',2));
+    ui->ABPressureV->setText(QString("AB Pressure : %1 bar").arg(s.afterburnerPressure,0,'f',2));
 
     ui->InletTempV->setText(QString("Inlet Temperature : %1 °C").arg(s.inletTemp,0,'f',2));
     ui->PressureRatioV->setText(QString("Pressure Ratio : %1 ").arg(s.compressRatio,0,'f',2));
 
     ui->FuelPressureV->setText(QString("Fuel Pressure : %1 bar").arg(s.fuelPressure,0,'f',2));
     ui->FuelPumpPowerV->setText(QString("Fuel Pump Power : %1 %").arg(s.fuelPumpPower,0,'f',2));
+    ui->ABPumpPowerV->setText(QString("AB Pump Power : %1 %").arg(s.afterburnerPumpPower,0,'f',2));
 
-    ui->CoolantTempV->setText(QString("Cooling Oil Temp : %1 °C").arg(s.coolantTemp,0,'f',2));
-    ui->CoolantPressureV->setText(QString("Cooling Oil Pressure : %1 bar").arg(s.coolantPressure,0,'f',2));
-    ui->CoolantPumpPowerV->setText(QString("Cooling Oil Pump Power : %1 %").arg(s.coolantPumpPower,0,'f',2));
+    ui->CoolantTempV->setText(QString("Oil Temp : %1 °C").arg(s.coolantTemp,0,'f',2));
+    ui->CoolantPressureV->setText(QString("Oil Pressure : %1 bar").arg(s.coolantPressure,0,'f',2));
+    ui->CoolantPumpPowerV->setText(QString("Oil Pump Power : %1 %").arg(s.coolantPumpPower,0,'f',2));
+    ui->BatteryVoltage->setText(QString("Battery Voltage : %1 V").arg(s.batteryVoltage,0,'f',2));
 
     ui->SparkPlugPower->setText(s.SparkPlugStatus ? "ON":"OFF");
     ui->SparkPlugPower->setStyleSheet(
@@ -171,6 +175,15 @@ double MainWindow::pressureFromVoltage(double voltage){
     return P_MIN + (clamped - V_MIN) * (P_MAX - P_MIN) / (V_MAX - V_MIN);
 }
 
+double MainWindow::throttleFromVoltage(double voltage){
+    if (!std::isfinite(voltage))
+        return std::numeric_limits<double>::quiet_NaN();
+
+    constexpr double V_MAX = 3.0;
+
+    return std::clamp(voltage, 0.0, V_MAX) * 100.0 / V_MAX;
+}
+
 FullData MainWindow::readSensors(){
     FullData s;
     s.D_T = QDateTime::currentDateTime();
@@ -180,13 +193,16 @@ FullData MainWindow::readSensors(){
             s.thrust = std::numeric_limits<double>::quiet_NaN();
             s.combustTemp = std::numeric_limits<double>::quiet_NaN();
             s.inletPressure = std::numeric_limits<double>::quiet_NaN();
+            s.afterburnerPressure = std::numeric_limits<double>::quiet_NaN();
             s.inletTemp = std::numeric_limits<double>::quiet_NaN();
             s.compressRatio = std::numeric_limits<double>::quiet_NaN();
             s.fuelPressure = std::numeric_limits<double>::quiet_NaN();
             s.fuelPumpPower = BLDC_Power;
+            s.afterburnerPumpPower = std::numeric_limits<double>::quiet_NaN();
             s.coolantTemp = std::numeric_limits<double>::quiet_NaN();
             s.coolantPressure = std::numeric_limits<double>::quiet_NaN();
             s.coolantPumpPower = std::numeric_limits<double>::quiet_NaN();
+            s.batteryVoltage = std::numeric_limits<double>::quiet_NaN();
             s.SparkPlugStatus = false;
             return s;
         }
@@ -238,6 +254,7 @@ FullData MainWindow::readSensors(){
 
     s.inletPressure = pressureFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_VCC, HW::Pins::Comp_P_Ch));
     s.fuelPressure = pressureFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_VCC, HW::Pins::Fuel_P_Ch));
+    s.afterburnerPressure = pressureFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_VCC, HW::Pins::AB_P_Ch));
     s.coolantPressure = pressureFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_VCC, HW::Pins::Oil_P_Ch));
 
     if (std::isfinite(s.inletPressure)) {
@@ -246,12 +263,14 @@ FullData MainWindow::readSensors(){
         s.compressRatio = std::numeric_limits<double>::quiet_NaN();
     }
 
-    s.fuelPumpPower = 0;
-    s.coolantPumpPower = 0;
+    s.batteryVoltage = hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::Battery_V_Ch);
+    s.fuelPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::FuelPump_Throttle_Ch));
+    s.afterburnerPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::AB_Throttle_Ch));
+    s.coolantPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::Oil_Throttle_Ch));
     s.SparkPlugStatus = hw.readSparkPower();
 #else
     auto rnd = QRandomGenerator::global();
-    static double t=0, ct=20, ip=2.0, it=20, pr=1.0, fp=0.3, fpp=50, coT=35, coP=1.2, coPP=60;
+    static double t=0, ct=20, ip=2.0, abp=1.0, it=20, pr=1.0, fp=0.3, fpp=50, abpp=40, coT=35, coP=1.2, coPP=60, bv=12.0;
     auto jitter = [](double v, double step, double minv, double maxv){
         auto* rng = QRandomGenerator::global();
         double u = rng->generateDouble();
@@ -262,24 +281,30 @@ FullData MainWindow::readSensors(){
     t   = jitter(t,   1.0,   0.0, 200.0);
     ct  = jitter(ct,  2.0,  20.0,1200.0);
     ip  = jitter(ip,  0.02, 0.80,  3.00);
+    abp = jitter(abp, 0.02, 0.00, 10.00);
     it  = jitter(it,  0.50,  0.0, 200.0);
     pr  = jitter(pr,  0.01, 0.80,  2.50);
     fp  = jitter(fp,  0.02, 0.00, 10.00);
     fpp = jitter(fpp,  1.0, 0.00,100.00);
+    abpp= jitter(abpp, 1.0, 0.00,100.00);
     coT = jitter(coT,  0.8,  0.0, 200.0);
     coP = jitter(coP, 0.02, 0.50,  3.00);
     coPP= jitter(coPP, 1.0,  0.0,100.0);
+    bv  = jitter(bv,  0.02, 0.00, 20.00);
 
     s.thrust = t;
     s.combustTemp = ct;
     s.inletPressure = ip;
+    s.afterburnerPressure = abp;
     s.inletTemp = it;
     s.compressRatio = ip/1.01325;
     s.fuelPressure = fp;
     s.fuelPumpPower = fpp;
+    s.afterburnerPumpPower = abpp;
     s.coolantTemp = coT;
     s.coolantPressure = coP;
     s.coolantPumpPower = coPP;
+    s.batteryVoltage = bv;
     s.SparkPlugStatus = (rnd->bounded(100) < 5) ? !s.SparkPlugStatus : s.SparkPlugStatus;
 #endif
     return s;

@@ -40,14 +40,17 @@ struct FullData {
     double      thrust = 0.0;         // kg
     double      combustTemp = 0.0;    // °C
     double      inletPressure = 0.0;  // bar
+    double      afterburnerPressure = 0.0;  // bar
 
     double      inletTemp = 0.0;         // °C
     double      compressRatio = 0.0;     // number
     double      fuelPressure = 0.0;      // bar
     double      fuelPumpPower = 0.0;     // percentage
+    double      afterburnerPumpPower = 0.0;  // percentage
     double      coolantTemp = 0.0;       // °C
     double      coolantPressure = 0.0;   // bar
     double      coolantPumpPower = 0.0;  // percentage
+    double      batteryVoltage = 0.0;    // V
 
     bool        SparkPlugStatus = false;
 };
@@ -165,6 +168,7 @@ private:
 
     static QString getBaseDir();
     static double pressureFromVoltage(double voltage);
+    static double throttleFromVoltage(double voltage);
     void SyncDta(QFile &file, QTextStream *ts = nullptr);
     bool openCsvFile();
     void writeCsv(const FullData& s);
