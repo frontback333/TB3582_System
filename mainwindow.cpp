@@ -175,13 +175,11 @@ double MainWindow::pressureFromVoltage(double voltage){
     return P_MIN + (clamped - V_MIN) * (P_MAX - P_MIN) / (V_MAX - V_MIN);
 }
 
-double MainWindow::throttleFromVoltage(double voltage){
+double MainWindow::throttleFromVoltage(double voltage, double fullThrottleVoltage){
     if (!std::isfinite(voltage))
         return std::numeric_limits<double>::quiet_NaN();
 
-    constexpr double V_MAX = 3.0;
-
-    return std::clamp(voltage, 0.0, V_MAX) * 100.0 / V_MAX;
+    return std::clamp(voltage, 0.0, fullThrottleVoltage) * 100.0 / fullThrottleVoltage;
 }
 
 double MainWindow::batteryVoltageFromVoltage(double voltage){
@@ -278,7 +276,8 @@ FullData MainWindow::readSensors(){
     s.batteryVoltage = batteryVoltageFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::Battery_V_Ch));
     s.fuelPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::FuelPump_Throttle_Ch));
     s.afterburnerPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::AB_Throttle_Ch));
-    s.coolantPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::Oil_Throttle_Ch));
+    // A3 oil pump: measured full throttle is about 2.74 V, with endpoint margin.
+    s.coolantPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::Oil_Throttle_Ch), 2.73);
     s.SparkPlugStatus = hw.readSparkPower();
 #else
     auto rnd = QRandomGenerator::global();
