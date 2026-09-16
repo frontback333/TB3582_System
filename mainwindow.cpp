@@ -239,7 +239,9 @@ FullData MainWindow::readSensors(){
         adsInitialized = true;
         for(int i = 0; i < 4; i++){
             adsInitialized &= hw.iioOpenAddr(1, HW::Pins::ADDR_VCC, i);
-            adsInitialized &= hw.iioOpenAddr(1, HW::Pins::ADDR_SCL, i);
+            // Pump inputs reach 3 V: use +/-4.096 V (0.125 mV/LSB) to avoid clipping.
+            const double pumpScale = (i == HW::Pins::Battery_V_Ch) ? 0.0 : 0.125;
+            adsInitialized &= hw.iioOpenAddr(1, HW::Pins::ADDR_SCL, i, pumpScale);
         }
     }
 

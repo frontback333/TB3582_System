@@ -103,7 +103,7 @@ QString HW::GPIO::IioChannel::resolveIioBasePathByAddr(int bus, int addr7){
     return lst.first().canonicalFilePath(); // /sys/bus/iio/devices/iio:deviceX
 }
 
-bool HW::GPIO::IioChannel::openByAddr(int bus, int addr7, int ch){
+bool HW::GPIO::IioChannel::openByAddr(int bus, int addr7, int ch, double requestedScale){
     const QString base = resolveIioBasePathByAddr(bus, addr7);
     if (base.isEmpty()) return false;
 
@@ -113,6 +113,22 @@ bool HW::GPIO::IioChannel::openByAddr(int bus, int addr7, int ch){
     scale = QString::fromUtf8(scl.readAll()).trimmed().toDouble(&ok);
     scl.close();
     if (!ok) return false;
+
+    // IIO scale is mV/LSB. Configure the ADC gain, then cache its actual scale.
+    if (requestedScale > 0.0 && !qFuzzyCompare(scale, requestedScale)) {
+        const QByteArray value = QByteArray::number(requestedScale, 'f', 9) + '\n';
+        if (!scl.open(QIODevice::WriteOnly) ||
+            scl.write(value) != value.size() || !scl.flush()) {
+            qWarning() << "ADS1115 scale configuration failed:" << scl.fileName()
+                       << scl.errorString();
+            return false;
+        }
+        scl.close();
+        if (!scl.open(QIODevice::ReadOnly)) return false;
+        scale = QString::fromUtf8(scl.readAll()).trimmed().toDouble(&ok);
+        scl.close();
+        if (!ok || !qFuzzyCompare(scale, requestedScale)) return false;
+    }
 
     raw.setFileName(base + QString("/in_voltage%1_raw").arg(ch));
     return raw.open(QIODevice::ReadOnly);
@@ -128,12 +144,12 @@ double HW::GPIO::IioChannel::readV(){
     return code * scale / 1000;
 }
 
-bool HW::GPIO::iioOpenAddr(int bus, int addr7, int ch){
+bool HW::GPIO::iioOpenAddr(int bus, int addr7, int ch, double requestedScale){
     Key key{bus, addr7, ch};
     if (iio.contains(key)) return true;
 
     auto chan = QSharedPointer<IioChannel>::create();
-    if (!chan->openByAddr(bus, addr7, ch)) return false;
+    if (!chan->openByAddr(bus, addr7, ch, requestedScale)) return false;
 
     iio.insert(key, chan);  // 포인터는 복사 가능 → 에러 없음
     return true;

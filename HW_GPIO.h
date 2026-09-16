@@ -73,14 +73,14 @@ struct GPIO {
         QFile  raw;
         double scale = std::numeric_limits<double>::quiet_NaN();
         static QString resolveIioBasePathByAddr(int bus, int addr7);
-        bool openByAddr(int bus, int addr7, int ch);
+        bool openByAddr(int bus, int addr7, int ch, double requestedScale = 0.0);
         double readV();
         void close(){ if (raw.isOpen()) raw.close(); }
     };
     using Key = std::tuple<int,int,int>; // (bus, addr7, ch)
     QMap<Key, QSharedPointer<IioChannel>> iio;
 
-    bool   iioOpenAddr(int bus, int addr7, int ch);
+    bool   iioOpenAddr(int bus, int addr7, int ch, double requestedScale = 0.0);
     double iioReadVAddr(int bus, int addr7, int ch);
     void   iioCloseAddr(int bus, int addr7, int ch);
 
