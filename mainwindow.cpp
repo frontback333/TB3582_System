@@ -179,7 +179,8 @@ double MainWindow::throttleFromVoltage(double voltage){
     if (!std::isfinite(voltage))
         return std::numeric_limits<double>::quiet_NaN();
 
-    constexpr double V_MAX = 3.0;
+    // Full throttle measures about 2.74 V; allow a small endpoint margin.
+    constexpr double V_MAX = 2.73;
 
     return std::clamp(voltage, 0.0, V_MAX) * 100.0 / V_MAX;
 }
@@ -239,7 +240,7 @@ FullData MainWindow::readSensors(){
         adsInitialized = true;
         for(int i = 0; i < 4; i++){
             adsInitialized &= hw.iioOpenAddr(1, HW::Pins::ADDR_VCC, i);
-            // Pump inputs reach 3 V: use +/-4.096 V (0.125 mV/LSB) to avoid clipping.
+            // Pump inputs exceed 2.048 V: use +/-4.096 V (0.125 mV/LSB).
             const double pumpScale = (i == HW::Pins::Battery_V_Ch) ? 0.0 : 0.125;
             adsInitialized &= hw.iioOpenAddr(1, HW::Pins::ADDR_SCL, i, pumpScale);
         }
