@@ -179,8 +179,7 @@ double MainWindow::throttleFromVoltage(double voltage){
     if (!std::isfinite(voltage))
         return std::numeric_limits<double>::quiet_NaN();
 
-    // Full throttle measures about 2.74 V; allow a small endpoint margin.
-    constexpr double V_MAX = 2.73;
+    constexpr double V_MAX = 3.0;
 
     return std::clamp(voltage, 0.0, V_MAX) * 100.0 / V_MAX;
 }
