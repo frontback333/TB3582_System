@@ -165,8 +165,9 @@ double MainWindow::pressureFromVoltage(double voltage){
     if (!std::isfinite(voltage))
         return std::numeric_limits<double>::quiet_NaN();
 
-    constexpr double V_MIN = 0.5;
-    constexpr double V_MAX = 4.5;
+    // T2000 two-wire 4-20 mA signal converted to 0.6-3.0 V.
+    constexpr double V_MIN = 0.6;
+    constexpr double V_MAX = 3.0;
     constexpr double P_MIN = 0.0;
     constexpr double P_MAX = 10.0;
 
@@ -175,10 +176,11 @@ double MainWindow::pressureFromVoltage(double voltage){
     return P_MIN + (clamped - V_MIN) * (P_MAX - P_MIN) / (V_MAX - V_MIN);
 }
 
-double MainWindow::throttleFromVoltage(double voltage, double fullThrottleVoltage){
+double MainWindow::throttleFromVoltage(double voltage){
     if (!std::isfinite(voltage))
         return std::numeric_limits<double>::quiet_NaN();
 
+    constexpr double fullThrottleVoltage = 2.73;
     return std::clamp(voltage, 0.0, fullThrottleVoltage) * 100.0 / fullThrottleVoltage;
 }
 
@@ -236,7 +238,8 @@ FullData MainWindow::readSensors(){
     if (!adsInitialized) {
         adsInitialized = true;
         for(int i = 0; i < 4; i++){
-            adsInitialized &= hw.iioOpenAddr(1, HW::Pins::ADDR_VCC, i);
+            // Pressure inputs reach 3.0 V: use +/-4.096 V too.
+            adsInitialized &= hw.iioOpenAddr(1, HW::Pins::ADDR_VCC, i, 0.125);
             // Pump inputs exceed 2.048 V: use +/-4.096 V (0.125 mV/LSB).
             const double pumpScale = (i == HW::Pins::Battery_V_Ch) ? 0.0 : 0.125;
             adsInitialized &= hw.iioOpenAddr(1, HW::Pins::ADDR_SCL, i, pumpScale);
@@ -276,8 +279,7 @@ FullData MainWindow::readSensors(){
     s.batteryVoltage = batteryVoltageFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::Battery_V_Ch));
     s.fuelPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::FuelPump_Throttle_Ch));
     s.afterburnerPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::AB_Throttle_Ch));
-    // A3 oil pump: measured full throttle is about 2.74 V, with endpoint margin.
-    s.coolantPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::Oil_Throttle_Ch), 2.73);
+    s.coolantPumpPower = throttleFromVoltage(hw.iioReadVAddr(1, HW::Pins::ADDR_SCL, HW::Pins::Oil_Throttle_Ch));
     s.SparkPlugStatus = hw.readSparkPower();
 #else
     auto rnd = QRandomGenerator::global();
