@@ -24,6 +24,7 @@ using Key = std::tuple<int,int,int>;
 namespace HW{
 
 struct Pins{
+    static constexpr int SensorPowerEnable = 15; // BCM15, physical pin 10; active HIGH
     static constexpr int BLDC_PWM       = 12; //12
 
     static constexpr int SparkPWR       = 27; //27

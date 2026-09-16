@@ -17,6 +17,8 @@ Qt를 자동으로 찾지 못하면 구성 단계에 `-DCMAKE_PREFIX_PATH=<Qt �
 
 ## Raspberry Pi ADS1115 설정
 
+센서 전원 MOSFET의 게이트는 BCM GPIO15(물리 핀 10)로 제어합니다. 프로그램의 GPIO 초기화 시 출력 HIGH로 켜서 실행 중 유지하고, 정상 종료 시 `gpioTerminate()` 전에 LOW로 끕니다. 강제 종료(`SIGKILL`)나 충돌 시에는 종료 코드 실행을 보장할 수 없습니다.
+
 프로그램은 I2C 버스 1의 두 ADC를 사용합니다.
 
 | 주소 | 채널 A0 / A1 / A2 / A3 |

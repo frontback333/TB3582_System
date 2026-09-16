@@ -5,10 +5,19 @@
 #include <thread>
 #include <chrono>
 #include <cmath>
+#include <QDebug>
 
 bool HW::GPIO::init(){
 #ifdef Q_OS_UNIX
     if (gpioInitialise() < 0) return false;
+
+    if (gpioSetMode(Pins::SensorPowerEnable, PI_OUTPUT) < 0 ||
+        gpioWrite(Pins::SensorPowerEnable, 1) < 0) {
+        qWarning() << "Sensor power enable failed on BCM" << Pins::SensorPowerEnable;
+        gpioWrite(Pins::SensorPowerEnable, 0);
+        gpioTerminate();
+        return false;
+    }
 
     gpioSetMode(Pins::SparkPWR, PI_INPUT);
 
@@ -24,6 +33,7 @@ bool HW::GPIO::init(){
 
 void HW::GPIO::shutdown(){
 #ifdef Q_OS_UNIX
+    gpioWrite(Pins::SensorPowerEnable, 0);
     gpioTerminate();
 #endif
 }
