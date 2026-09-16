@@ -1,0 +1,5 @@
+# Merge into the active section of /boot/firmware/config.txt.
+# Replace existing ADS1115 entries; do not append duplicate device definitions.
+dtparam=i2c_arm=on
+dtoverlay=ads1115,addr=0x48
+dtoverlay=ads1115,addr=0x49
