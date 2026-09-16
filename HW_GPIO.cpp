@@ -21,6 +21,12 @@ bool HW::GPIO::init(){
 
     gpioSetMode(Pins::SparkPWR, PI_INPUT);
 
+    // Software SPI must not inherit SPI0's alternate function on MISO.
+    if (gpioSetMode(Pins::SPI_MISO, PI_INPUT) < 0) {
+        qWarning() << "MAX6675 MISO input setup failed on BCM" << Pins::SPI_MISO;
+        shutdown();
+        return false;
+    }
     gpioSetMode(Pins::SPI_CLK, PI_OUTPUT); gpioWrite(Pins::SPI_CLK, 0);
     for (int cs : {Pins::SPI_CS_0, Pins::SPI_CS_1, Pins::SPI_CS_2, Pins::SPI_CS_3}) {
         gpioSetMode(cs, PI_OUTPUT); gpioWrite(cs, 1);
@@ -76,7 +82,8 @@ unsigned HW::GPIO::readBitsCS(int cs_gpio, int bits){
 
 double HW::GPIO::decodeMAX6675(unsigned raw16){
     raw16 &= 0xFFFFu;
-    if (raw16 & 0x0004u) return std::numeric_limits<double>::quiet_NaN(); // open-circuit
+    // D15 (dummy) and D1 (device ID) must be zero; D0 is tri-state.
+    if (raw16 & 0x8006u) return std::numeric_limits<double>::quiet_NaN();
     unsigned t12 = (raw16 >> 3) & 0x0FFFu;
     return t12 * 0.25; // °C
 }
@@ -84,6 +91,15 @@ double HW::GPIO::decodeMAX6675(unsigned raw16){
 double HW::GPIO::readMAX6675C(int cs_gpio){
 #ifdef Q_OS_UNIX
     unsigned raw = readBitsCS(cs_gpio, 16);
+    // Log the first frame and fault-state transitions, without flooding each sample.
+    const unsigned status = raw & 0x8006u;
+    static QMap<int, unsigned> lastStatus;
+    if (!lastStatus.contains(cs_gpio) || lastStatus.value(cs_gpio) != status) {
+        qInfo().noquote() << QString("MAX6675 CS BCM=%1 raw=0x%2 open=%3 frameError=%4")
+            .arg(cs_gpio).arg(raw, 4, 16, QLatin1Char('0'))
+            .arg(bool(raw & 0x0004u)).arg(bool(raw & 0x8002u));
+        lastStatus.insert(cs_gpio, status);
+    }
     return decodeMAX6675(raw);
 #else
     return std::numeric_limits<double>::quiet_NaN();
@@ -136,7 +152,7 @@ bool HW::GPIO::IioChannel::openByAddr(int bus, int addr7, int ch, double request
 
 double HW::GPIO::IioChannel::readV(){
     if (!raw.isOpen()) return std::numeric_limits<double>::quiet_NaN();
-    raw.seek(0);
+    if (!raw.seek(0)) return std::numeric_limits<double>::quiet_NaN();
     QByteArray b = raw.read(32);
     bool ok=false;
     int code = QString::fromUtf8(b).trimmed().toInt(&ok);
@@ -149,7 +165,14 @@ bool HW::GPIO::iioOpenAddr(int bus, int addr7, int ch, double requestedScale){
     if (iio.contains(key)) return true;
 
     auto chan = QSharedPointer<IioChannel>::create();
-    if (!chan->openByAddr(bus, addr7, ch, requestedScale)) return false;
+    if (!chan->openByAddr(bus, addr7, ch, requestedScale)) {
+        qWarning().noquote() << QString("ADS1115 open failed: bus=%1 addr=0x%2 A%3")
+            .arg(bus).arg(addr7, 2, 16, QLatin1Char('0')).arg(ch);
+        return false;
+    }
+    qInfo().noquote() << QString("ADS1115 bus=%1 addr=0x%2 A%3 path=%4 scale=%5 mV/LSB initial=%6 V")
+        .arg(bus).arg(addr7, 2, 16, QLatin1Char('0')).arg(ch)
+        .arg(chan->raw.fileName()).arg(chan->scale).arg(chan->readV());
 
     iio.insert(key, chan);  // 포인터는 복사 가능 → 에러 없음
     return true;

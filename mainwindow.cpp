@@ -254,9 +254,10 @@ FullData MainWindow::readSensors(){
         const double inlet = hw.readMAX6675C(HW::Pins::SPI_CS_1);
         const double coolant = hw.readMAX6675C(HW::Pins::SPI_CS_2);
 
-        if (std::isfinite(combust)) lastCombustTemp = combust;
-        if (std::isfinite(inlet)) lastInletTemp = inlet;
-        if (std::isfinite(coolant)) lastCoolantTemp = coolant;
+        // A failed conversion must not leave an old temperature looking current.
+        lastCombustTemp = combust;
+        lastInletTemp = inlet;
+        lastCoolantTemp = coolant;
 
         max6675Timer.restart();
     }
